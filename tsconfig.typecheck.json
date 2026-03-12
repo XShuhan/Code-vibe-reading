@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "scripts/**/*.mjs",
+    "vitest.config.ts"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "packages/analyzer/debug.ts"
+  ]
+}
+

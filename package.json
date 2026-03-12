@@ -1,0 +1,29 @@
+{
+  "name": "code-vibe-reading",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.32.1",
+  "scripts": {
+    "build": "pnpm typecheck && pnpm build:extension && pnpm build:webview",
+    "build:extension": "node scripts/build-extension.mjs",
+    "build:webview": "node scripts/build-webview.mjs",
+    "dev:extension": "node scripts/build-extension.mjs --watch",
+    "dev:webview": "node scripts/build-webview.mjs --watch",
+    "typecheck": "tsc -p tsconfig.typecheck.json --noEmit",
+    "lint": "pnpm typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@types/vscode": "^1.97.0",
+    "esbuild": "^0.25.9",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
+

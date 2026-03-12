@@ -1,0 +1,14 @@
+{
+  "name": "@code-vibe/analyzer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@code-vibe/shared": "workspace:*",
+    "typescript": "^5.9.2"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
+

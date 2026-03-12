@@ -1,0 +1,193 @@
+{
+  "name": "code-vibe-reading-extension",
+  "displayName": "Code Vibe Reading",
+  "description": "Navigation-first code comprehension workbench for VS Code.",
+  "version": "0.1.0",
+  "private": true,
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.97.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:vibe.refreshIndex",
+    "onCommand:vibe.askAboutSelection",
+    "onCommand:vibe.explainCurrentSymbol",
+    "onCommand:vibe.saveSelectionAsCard",
+    "onCommand:vibe.openCanvas",
+    "onCommand:vibe.traceCallPath",
+    "onView:vibe.map",
+    "onView:vibe.threads",
+    "onView:vibe.cards"
+  ],
+  "main": "./dist/extension.js",
+  "icon": "media/icon.svg",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vibe",
+          "title": "Vibe",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "vibe": [
+        {
+          "id": "vibe.map",
+          "name": "Map"
+        },
+        {
+          "id": "vibe.threads",
+          "name": "Threads"
+        },
+        {
+          "id": "vibe.cards",
+          "name": "Cards"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "vibe.map",
+        "contents": "Build a local code map to inspect files, symbols, and traces.\n[Refresh Index](command:vibe.refreshIndex)"
+      },
+      {
+        "view": "vibe.threads",
+        "contents": "Ask grounded questions about code selections and keep the answers here.\n[Ask About Selection](command:vibe.askAboutSelection)"
+      },
+      {
+        "view": "vibe.cards",
+        "contents": "Capture durable reading notes as cards.\n[Save Selection as Card](command:vibe.saveSelectionAsCard)\n[Open Canvas](command:vibe.openCanvas)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "vibe.refreshIndex",
+        "title": "Vibe: Refresh Index"
+      },
+      {
+        "command": "vibe.askAboutSelection",
+        "title": "Vibe: Ask About Selection"
+      },
+      {
+        "command": "vibe.explainCurrentSymbol",
+        "title": "Vibe: Explain Current Symbol"
+      },
+      {
+        "command": "vibe.saveSelectionAsCard",
+        "title": "Vibe: Save Selection as Card"
+      },
+      {
+        "command": "vibe.addThreadAnswerToCanvas",
+        "title": "Vibe: Add Thread Answer to Canvas"
+      },
+      {
+        "command": "vibe.openCanvas",
+        "title": "Vibe: Open Canvas"
+      },
+      {
+        "command": "vibe.traceCallPath",
+        "title": "Vibe: Trace Call Path"
+      },
+      {
+        "command": "vibe.openThread",
+        "title": "Vibe: Open Thread"
+      },
+      {
+        "command": "vibe.openCard",
+        "title": "Vibe: Open Card"
+      },
+      {
+        "command": "vibe.openCitation",
+        "title": "Vibe: Open Citation"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "vibe.askAboutSelection",
+          "group": "navigation@1"
+        },
+        {
+          "command": "vibe.saveSelectionAsCard",
+          "group": "navigation@2"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "vibe.explainCurrentSymbol",
+          "group": "navigation@1"
+        },
+        {
+          "command": "vibe.traceCallPath",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "vibe.openThread",
+          "when": "view == vibe.threads",
+          "group": "inline"
+        },
+        {
+          "command": "vibe.addThreadAnswerToCanvas",
+          "when": "view == vibe.threads",
+          "group": "navigation"
+        },
+        {
+          "command": "vibe.openCard",
+          "when": "view == vibe.cards",
+          "group": "inline"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Code Vibe Reading",
+      "properties": {
+        "vibe.model.provider": {
+          "type": "string",
+          "default": "openai-compatible",
+          "enum": ["openai-compatible", "mock"],
+          "description": "Model gateway provider."
+        },
+        "vibe.model.baseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Base URL for the OpenAI-compatible endpoint."
+        },
+        "vibe.model.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API key for the configured model endpoint."
+        },
+        "vibe.model.model": {
+          "type": "string",
+          "default": "",
+          "description": "Model identifier."
+        },
+        "vibe.model.temperature": {
+          "type": "number",
+          "default": 0.1,
+          "minimum": 0,
+          "maximum": 2
+        },
+        "vibe.model.maxTokens": {
+          "type": "number",
+          "default": 900,
+          "minimum": 128,
+          "maximum": 4096
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@code-vibe/analyzer": "workspace:*",
+    "@code-vibe/model-gateway": "workspace:*",
+    "@code-vibe/persistence": "workspace:*",
+    "@code-vibe/retrieval": "workspace:*",
+    "@code-vibe/shared": "workspace:*"
+  }
+}

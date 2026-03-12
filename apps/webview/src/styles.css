@@ -1,0 +1,240 @@
+:root {
+  color-scheme: light dark;
+  --vibe-bg: var(--vscode-editor-background);
+  --vibe-panel: color-mix(in srgb, var(--vscode-sideBar-background) 82%, transparent);
+  --vibe-border: var(--vscode-panel-border);
+  --vibe-text: var(--vscode-editor-foreground);
+  --vibe-muted: var(--vscode-descriptionForeground);
+  --vibe-accent: var(--vscode-textLink-foreground);
+  --vibe-accent-soft: color-mix(in srgb, var(--vscode-textLink-foreground) 18%, transparent);
+  --vibe-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  font-family: var(--vscode-font-family);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--vibe-accent) 12%, transparent), transparent 35%),
+    linear-gradient(180deg, color-mix(in srgb, var(--vibe-bg) 92%, black 8%), var(--vibe-bg));
+  color: var(--vibe-text);
+}
+
+body {
+  min-height: 100vh;
+}
+
+button,
+select {
+  font: inherit;
+}
+
+.detail-shell,
+.canvas-shell {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+}
+
+.canvas-shell {
+  grid-template-columns: minmax(0, 1fr) 340px;
+  min-height: 100vh;
+}
+
+.canvas-stage {
+  min-height: calc(100vh - 32px);
+  border: 1px solid var(--vibe-border);
+  border-radius: 20px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--vibe-panel) 94%, transparent), var(--vibe-bg)),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 23px,
+      color-mix(in srgb, var(--vibe-border) 38%, transparent) 24px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 23px,
+      color-mix(in srgb, var(--vibe-border) 38%, transparent) 24px
+    );
+  box-shadow: var(--vibe-shadow);
+}
+
+.canvas-toolbar {
+  padding: 18px 20px 0;
+}
+
+.canvas-toolbar h1,
+.detail-panel h1 {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+}
+
+.canvas-board {
+  position: relative;
+  min-height: calc(100vh - 140px);
+  padding: 20px;
+}
+
+.canvas-sidebar {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.detail-panel {
+  border: 1px solid var(--vibe-border);
+  border-radius: 20px;
+  padding: 18px;
+  background: color-mix(in srgb, var(--vibe-panel) 96%, transparent);
+  box-shadow: var(--vibe-shadow);
+}
+
+.detail-panel h2 {
+  margin-top: 0;
+}
+
+.detail-content {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--vscode-editor-font-family, monospace);
+  font-size: 0.92rem;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.74rem;
+  color: var(--vibe-accent);
+}
+
+.muted {
+  color: var(--vibe-muted);
+}
+
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip,
+.ghost-button,
+.primary-button {
+  border-radius: 999px;
+  padding: 8px 12px;
+  border: 1px solid var(--vibe-border);
+  background: color-mix(in srgb, var(--vibe-accent-soft) 60%, transparent);
+  color: var(--vibe-text);
+  cursor: pointer;
+}
+
+.primary-button {
+  width: 100%;
+  border-color: color-mix(in srgb, var(--vibe-accent) 60%, var(--vibe-border));
+  background: color-mix(in srgb, var(--vibe-accent) 28%, transparent);
+}
+
+.primary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.field select {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--vibe-border);
+  padding: 10px 12px;
+  background: var(--vibe-bg);
+  color: var(--vibe-text);
+}
+
+.canvas-node {
+  position: absolute;
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--vibe-accent) 40%, var(--vibe-border));
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--vibe-accent) 12%, transparent), transparent 56%),
+    color-mix(in srgb, var(--vibe-panel) 96%, transparent);
+  color: var(--vibe-text);
+  text-align: left;
+  cursor: grab;
+  box-shadow: var(--vibe-shadow);
+}
+
+.canvas-node:active {
+  cursor: grabbing;
+}
+
+.canvas-node-type {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--vibe-accent);
+}
+
+.canvas-node-summary {
+  font-size: 0.88rem;
+  color: var(--vibe-muted);
+  line-height: 1.35;
+}
+
+.edge-list {
+  display: grid;
+  gap: 10px;
+}
+
+.edge-row {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--vibe-border);
+  border-radius: 14px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--vibe-bg) 70%, transparent);
+}
+
+.edge-relation {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--vibe-accent) 20%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+}
+
+@media (max-width: 900px) {
+  .canvas-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .canvas-stage {
+    min-height: 60vh;
+  }
+
+  .canvas-board {
+    min-height: 50vh;
+  }
+}

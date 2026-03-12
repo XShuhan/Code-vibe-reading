@@ -1,0 +1,11 @@
+{
+  "name": "code-vibe-reading-webview",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@code-vibe/shared": "workspace:*",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  }
+}
+

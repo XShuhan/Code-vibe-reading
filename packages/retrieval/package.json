@@ -1,0 +1,14 @@
+{
+  "name": "@code-vibe/retrieval",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@code-vibe/analyzer": "workspace:*",
+    "@code-vibe/shared": "workspace:*"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
+
