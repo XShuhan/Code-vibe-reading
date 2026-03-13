@@ -7,6 +7,7 @@ import { createId, nowIso } from "@code-vibe/shared";
 
 import type { PersistenceLayer } from "@code-vibe/persistence";
 
+import { assertModelConfigured } from "../config/settings";
 import type { IndexService } from "./indexService";
 
 export class ThreadService {
@@ -39,11 +40,7 @@ export class ThreadService {
     editorState: NonNullable<ReturnType<typeof import("../editor/selectionContext").getActiveSelectionState>>,
     modelConfig: ReturnType<typeof import("../config/settings").getModelConfig>
   ): Promise<Thread> {
-    if (modelConfig.provider === "openai-compatible" && (!modelConfig.baseUrl || !modelConfig.apiKey || !modelConfig.model)) {
-      throw new Error(
-        "AI is not configured. Set vibe.model.baseUrl, vibe.model.apiKey, and vibe.model.model, or switch vibe.model.provider to mock."
-      );
-    }
+    assertModelConfigured(modelConfig);
 
     const index = await this.indexService.ensureIndex();
     const { context, evidence } = buildSelectionQuestionContext(index, editorState, question);
@@ -96,4 +93,3 @@ function deriveThreadTitle(question: string, filePath: string): string {
 
   return `Explain ${filePath}`;
 }
-

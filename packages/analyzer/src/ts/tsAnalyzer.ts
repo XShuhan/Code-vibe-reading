@@ -1,5 +1,6 @@
 import type { CodeEdge, CodeNode, WorkspaceIndex } from "@code-vibe/shared";
 
+import { analyzeTextFile } from "../text/textAnalyzer";
 import { scanWorkspaceFiles } from "../core/fileScanner";
 import { createWorkspaceSnapshot } from "../core/workspaceSnapshot";
 import { buildCallEdges } from "./callGraph";
@@ -29,16 +30,22 @@ export async function indexTypeScriptWorkspace(rootPath: string): Promise<Worksp
   for (const file of scannedFiles) {
     fileContents[file.relativePath] = file.content;
     try {
-      const result = analyzeSourceFile({
-        content: file.content,
-        path: file.relativePath,
-        workspaceId: snapshot.id
-      });
+      const result = isTypeScriptFamily(file.relativePath)
+        ? analyzeSourceFile({
+            content: file.content,
+            path: file.relativePath,
+            workspaceId: snapshot.id
+          })
+        : analyzeTextFile({
+            content: file.content,
+            path: file.relativePath,
+            workspaceId: snapshot.id
+          });
 
-      nodes.push(...result.nodes);
-      edges.push(...result.containsEdges);
+      appendMany(nodes, result.nodes);
+      appendMany(edges, result.containsEdges);
       importCandidates.set(result.fileNode.path, result.importSpecifiers);
-      callReferences.push(...result.callReferences);
+      appendMany(callReferences, result.callReferences);
     } catch (error) {
       // Parsing failures should be isolated to the file.
       process.stderr.write(`[vibe][analyzer] failed to parse ${file.relativePath}: ${String(error)}\n`);
@@ -55,10 +62,10 @@ export async function indexTypeScriptWorkspace(rootPath: string): Promise<Worksp
       continue;
     }
 
-    edges.push(...buildImportEdges(snapshot.id, fileNode, importSpecifiers, fileNodesByPath));
+    appendMany(edges, buildImportEdges(snapshot.id, fileNode, importSpecifiers, fileNodesByPath));
   }
 
-  edges.push(...buildCallEdges(snapshot.id, nodes, callReferences));
+  appendMany(edges, buildCallEdges(snapshot.id, nodes, callReferences));
 
   return {
     snapshot,
@@ -77,7 +84,25 @@ function collectLanguageSet(paths: string[]): string[] {
     if (/\.(js|jsx|mjs|cjs)$/.test(filePath)) {
       languages.add("javascript");
     }
+    if (/\.py$/.test(filePath)) {
+      languages.add("python");
+    }
+    if (/\.(sh|bash|zsh)$/.test(filePath)) {
+      languages.add("shell");
+    }
+    if (/\.(json|jsonc)$/.test(filePath)) {
+      languages.add("json");
+    }
   }
   return [...languages];
 }
 
+function isTypeScriptFamily(filePath: string): boolean {
+  return /\.(ts|tsx|js|jsx|mts|cts|mjs|cjs)$/.test(filePath);
+}
+
+function appendMany<T>(target: T[], values: readonly T[]): void {
+  for (const value of values) {
+    target.push(value);
+  }
+}

@@ -89,8 +89,36 @@ export async function answerGroundedQuestion(
   };
 }
 
+export async function testModelConnection(
+  config: ModelConfig
+): Promise<{ model: string; content: string; availableModels: ModelInfo[] }> {
+  const adapter = createModelAdapter(config);
+  const availableModels = await adapter.listModels().catch(() => []);
+  const model = config.model || availableModels[0]?.id || "mock-grounded";
+  const response = await adapter.completeChat({
+    model,
+    temperature: 0,
+    maxTokens: Math.min(config.maxTokens || 64, 64),
+    messages: [
+      {
+        role: "system",
+        content: "Reply with exactly OK."
+      },
+      {
+        role: "user",
+        content: "Reply with exactly OK."
+      }
+    ]
+  });
+
+  return {
+    model,
+    content: response.content,
+    availableModels
+  };
+}
+
 function inferCardTitle(filePath: string): string {
   const lastSegment = filePath.split("/").at(-1) ?? filePath;
   return lastSegment.replace(/\.[^.]+$/, "");
 }
-

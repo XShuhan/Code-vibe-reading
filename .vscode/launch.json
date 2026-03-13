@@ -2,15 +2,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run Extension",
+      "name": "Run Code Vibe Reading",
       "type": "extensionHost",
       "request": "launch",
+      "preLaunchTask": "code-vibe: build",
       "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionDevelopmentPath=${workspaceFolder}/apps/extension",
         "/Users/xue/Projects/code-vibe-testing/workspace"
       ],
       "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
+        "${workspaceFolder}/apps/extension/dist/**/*.js"
       ]
     }
   ]

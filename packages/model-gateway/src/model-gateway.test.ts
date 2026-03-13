@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createModelAdapter, answerGroundedQuestion } from "./index";
+import { createModelAdapter, answerGroundedQuestion, testModelConnection } from "./index";
 import type { ModelConfig, EvidenceSpan, QuestionContext } from "@code-vibe/shared";
 
 describe("model-gateway", () => {
@@ -103,6 +103,25 @@ describe("model-gateway", () => {
       const answer = await answerGroundedQuestion(config, ctx, evidence);
 
       expect(answer.uncertaintyFlags.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("testModelConnection", () => {
+    it("returns a simple success response with mock adapter", async () => {
+      const config: ModelConfig = {
+        provider: "mock",
+        baseUrl: "",
+        apiKey: "",
+        model: "mock-grounded",
+        temperature: 0.1,
+        maxTokens: 1024
+      };
+
+      const result = await testModelConnection(config);
+
+      expect(result.model).toBe("mock-grounded");
+      expect(result.content).toBeTruthy();
+      expect(Array.isArray(result.availableModels)).toBe(true);
     });
   });
 });

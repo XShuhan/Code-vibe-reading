@@ -53,4 +53,3 @@ export function getNodeChildren(index: WorkspaceIndex, parentId: string): CodeNo
 export function getNodeMap(index: WorkspaceIndex): Map<string, CodeNode> {
   return new Map(index.nodes.map((node) => [node.id, node]));
 }
-

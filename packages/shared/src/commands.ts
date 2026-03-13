@@ -1,5 +1,6 @@
 export const COMMANDS = {
   refreshIndex: "vibe.refreshIndex",
+  testModelConnection: "vibe.testModelConnection",
   askAboutSelection: "vibe.askAboutSelection",
   explainCurrentSymbol: "vibe.explainCurrentSymbol",
   saveSelectionAsCard: "vibe.saveSelectionAsCard",

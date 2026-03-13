@@ -10,6 +10,7 @@ import type { CanvasService } from "./canvasService";
 import type { IndexService } from "./indexService";
 import type { ThreadService } from "./threadService";
 import { createWebviewHtml } from "../webview/bridge";
+import { resolveWebviewDistUri } from "../webview/assets";
 import { openCitation } from "../editor/sourceJump";
 
 export class VibeController implements vscode.Disposable {
@@ -17,6 +18,7 @@ export class VibeController implements vscode.Disposable {
   private readonly threadPanels = new Map<string, vscode.WebviewPanel>();
   private readonly cardPanels = new Map<string, vscode.WebviewPanel>();
   private readonly disposables: vscode.Disposable[] = [];
+  private readonly webviewResourceRoots: readonly vscode.Uri[];
 
   constructor(
     private readonly extensionUri: vscode.Uri,
@@ -25,6 +27,9 @@ export class VibeController implements vscode.Disposable {
     private readonly cardService: CardService,
     private readonly canvasService: CanvasService
   ) {
+    this.webviewResourceRoots = [
+      resolveWebviewDistUri(this.extensionUri)
+    ];
     this.disposables.push(
       this.threadService.onDidChange(() => void this.refreshOpenPanels()),
       this.cardService.onDidChange(() => void this.refreshOpenPanels()),
@@ -48,10 +53,7 @@ export class VibeController implements vscode.Disposable {
       "vibe.canvas",
       state.title,
       vscode.ViewColumn.Beside,
-      {
-        enableScripts: true,
-        retainContextWhenHidden: true
-      }
+      this.getWebviewOptions()
     );
     this.canvasPanel = panel;
     this.attachPanel(panel, state, async (message) => {
@@ -85,10 +87,7 @@ export class VibeController implements vscode.Disposable {
       "vibe.thread",
       state.title,
       vscode.ViewColumn.Beside,
-      {
-        enableScripts: true,
-        retainContextWhenHidden: true
-      }
+      this.getWebviewOptions()
     );
     this.threadPanels.set(threadId, panel);
     this.attachPanel(panel, state, async (message) => {
@@ -124,10 +123,7 @@ export class VibeController implements vscode.Disposable {
       "vibe.card",
       state.title,
       vscode.ViewColumn.Beside,
-      {
-        enableScripts: true,
-        retainContextWhenHidden: true
-      }
+      this.getWebviewOptions()
     );
     this.cardPanels.set(cardId, panel);
     this.attachPanel(panel, state, async (message) => {
@@ -146,7 +142,8 @@ export class VibeController implements vscode.Disposable {
     handler: (message: WebviewToExtensionMessage) => Promise<void>
   ): void {
     panel.webview.options = {
-      enableScripts: true
+      enableScripts: true,
+      localResourceRoots: this.webviewResourceRoots
     };
     void this.updatePanel(panel, state);
     panel.webview.onDidReceiveMessage((message: WebviewToExtensionMessage) => {
@@ -157,6 +154,14 @@ export class VibeController implements vscode.Disposable {
   private async updatePanel(panel: vscode.WebviewPanel, state: WebviewState): Promise<void> {
     panel.title = state.title;
     panel.webview.html = createWebviewHtml(panel.webview, this.extensionUri, state);
+  }
+
+  private getWebviewOptions(): vscode.WebviewOptions & vscode.WebviewPanelOptions {
+    return {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+      localResourceRoots: this.webviewResourceRoots
+    };
   }
 
   private async refreshOpenPanels(): Promise<void> {
@@ -234,4 +239,3 @@ export class VibeController implements vscode.Disposable {
     }
   }
 }
-

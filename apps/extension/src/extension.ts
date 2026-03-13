@@ -11,6 +11,7 @@ import { registerExplainCurrentSymbolCommand } from "./commands/explainCurrentSy
 import { registerOpenCanvasCommand } from "./commands/openCanvas";
 import { registerRefreshIndexCommand } from "./commands/refreshIndex";
 import { registerSaveSelectionAsCardCommand } from "./commands/saveSelectionAsCard";
+import { registerTestModelConnectionCommand } from "./commands/testModelConnection";
 import { registerTraceCallPathCommand } from "./commands/traceCallPath";
 import { CardService } from "./services/cardService";
 import { CanvasService } from "./services/canvasService";
@@ -84,7 +85,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         { scheme: "file", language: "typescript" },
         { scheme: "file", language: "javascript" },
         { scheme: "file", language: "typescriptreact" },
-        { scheme: "file", language: "javascriptreact" }
+        { scheme: "file", language: "javascriptreact" },
+        { scheme: "file", language: "python" },
+        { scheme: "file", language: "shellscript" },
+        { scheme: "file", language: "json" },
+        { scheme: "file", language: "jsonc" }
       ],
       new VibeCodeLensProvider(indexService)
     ),
@@ -103,6 +108,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   );
 
   registerRefreshIndexCommand(context, indexService);
+  registerTestModelConnectionCommand(context, output);
   registerAskAboutSelectionCommand(context, indexService, threadService, controller);
   registerExplainCurrentSymbolCommand(context, indexService, threadService, controller);
   registerSaveSelectionAsCardCommand(context, indexService, cardService, controller);

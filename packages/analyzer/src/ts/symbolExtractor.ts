@@ -1,22 +1,7 @@
 import ts from "typescript";
 
 import type { CodeEdge, CodeNode, CodeNodeKind } from "@code-vibe/shared";
-
-interface CallReference {
-  callerNodeId: string;
-  filePath: string;
-  name: string;
-  receiverText?: string;
-  containerName?: string;
-}
-
-export interface FileAnalysisResult {
-  fileNode: CodeNode;
-  nodes: CodeNode[];
-  containsEdges: CodeEdge[];
-  importSpecifiers: string[];
-  callReferences: CallReference[];
-}
+import type { CallReference, FileAnalysisResult } from "../core/analysisTypes";
 
 interface AnalyzeParams {
   content: string;
@@ -335,4 +320,3 @@ function getCallReference(
 
   return null;
 }
-

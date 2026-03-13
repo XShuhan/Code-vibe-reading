@@ -57,12 +57,18 @@ function resolveImportPath(
     `${basePath}.cts`,
     `${basePath}.mjs`,
     `${basePath}.cjs`,
+    `${basePath}.py`,
+    `${basePath}.sh`,
+    `${basePath}.bash`,
+    `${basePath}.zsh`,
+    `${basePath}.json`,
+    `${basePath}.jsonc`,
     path.posix.join(basePath, "index.ts"),
     path.posix.join(basePath, "index.tsx"),
     path.posix.join(basePath, "index.js"),
-    path.posix.join(basePath, "index.jsx")
+    path.posix.join(basePath, "index.jsx"),
+    path.posix.join(basePath, "__init__.py")
   ];
 
   return candidates.find((candidate) => fileNodesByPath.has(candidate)) ?? null;
 }
-

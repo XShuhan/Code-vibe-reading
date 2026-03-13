@@ -1,12 +1,5 @@
 import type { CodeEdge, CodeNode } from "@code-vibe/shared";
-
-interface CallReference {
-  callerNodeId: string;
-  filePath: string;
-  name: string;
-  receiverText?: string;
-  containerName?: string;
-}
+import type { CallReference } from "../core/analysisTypes";
 
 export function buildCallEdges(
   workspaceId: string,
@@ -80,4 +73,3 @@ function resolveTargets(reference: CallReference, nodesByName: Map<string, CodeN
 
   return candidates.filter((candidate) => candidate.exported);
 }
-

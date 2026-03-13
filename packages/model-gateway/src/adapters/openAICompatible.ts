@@ -65,7 +65,11 @@ export class OpenAICompatibleAdapter implements ModelAdapter {
     });
 
     if (!response.ok) {
-      throw new Error(`Model request failed: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      const detail = errorText.trim();
+      throw new Error(
+        `Model request failed: ${response.status} ${response.statusText}${detail ? ` - ${detail}` : ""}`
+      );
     }
 
     const data = (await response.json()) as {
@@ -101,4 +105,3 @@ function assertConfigured(config: ModelConfig): void {
     throw new Error("Missing vibe model configuration. Configure provider, baseUrl, apiKey, and model.");
   }
 }
-

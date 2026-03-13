@@ -19,7 +19,13 @@ const SUPPORTED_EXTENSIONS = new Set([
   ".mts",
   ".cts",
   ".mjs",
-  ".cjs"
+  ".cjs",
+  ".py",
+  ".sh",
+  ".bash",
+  ".zsh",
+  ".json",
+  ".jsonc"
 ]);
 
 export interface ScannedFile {
@@ -68,4 +74,3 @@ export async function scanWorkspaceFiles(rootPath: string): Promise<ScannedFile[
 export function toPosix(value: string): string {
   return value.split(path.sep).join(path.posix.sep);
 }
-

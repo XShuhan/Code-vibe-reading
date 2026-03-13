@@ -12,6 +12,7 @@
   "activationEvents": [
     "onStartupFinished",
     "onCommand:vibe.refreshIndex",
+    "onCommand:vibe.testModelConnection",
     "onCommand:vibe.askAboutSelection",
     "onCommand:vibe.explainCurrentSymbol",
     "onCommand:vibe.saveSelectionAsCard",
@@ -67,6 +68,10 @@
       {
         "command": "vibe.refreshIndex",
         "title": "Vibe: Refresh Index"
+      },
+      {
+        "command": "vibe.testModelConnection",
+        "title": "Vibe: Test Model Connection"
       },
       {
         "command": "vibe.askAboutSelection",
@@ -149,23 +154,24 @@
       "properties": {
         "vibe.model.provider": {
           "type": "string",
-          "default": "openai-compatible",
+          "default": "mock",
           "enum": ["openai-compatible", "mock"],
           "description": "Model gateway provider."
         },
         "vibe.model.baseUrl": {
           "type": "string",
-          "default": "",
+          "default": "https://api.moonshot.cn/v1",
           "description": "Base URL for the OpenAI-compatible endpoint."
         },
         "vibe.model.apiKey": {
           "type": "string",
           "default": "",
-          "description": "API key for the configured model endpoint."
+          "scope": "machine",
+          "description": "API key for the configured model endpoint. Set this in User Settings, not in workspace settings."
         },
         "vibe.model.model": {
           "type": "string",
-          "default": "",
+          "default": "kimi-k2-0905-preview",
           "description": "Model identifier."
         },
         "vibe.model.temperature": {
@@ -176,9 +182,9 @@
         },
         "vibe.model.maxTokens": {
           "type": "number",
-          "default": 900,
+          "default": 8192,
           "minimum": 128,
-          "maximum": 4096
+          "maximum": 32768
         }
       }
     }

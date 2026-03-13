@@ -89,7 +89,7 @@ export class IndexService {
 }
 
 function isIndexableFile(filePath: string): boolean {
-  return /\.(ts|tsx|js|jsx|mts|cts|mjs|cjs)$/.test(filePath);
+  return /\.(ts|tsx|js|jsx|mts|cts|mjs|cjs|py|sh|bash|zsh|json|jsonc)$/.test(filePath);
 }
 
 function hashText(value: string): string {
@@ -100,4 +100,3 @@ function hashText(value: string): string {
   }
   return Math.abs(hash).toString(16);
 }
-
