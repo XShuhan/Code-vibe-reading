@@ -95,6 +95,24 @@ export interface Citation {
   label: string;
 }
 
+export interface CodeThreadLocation {
+  filePath: string;
+  startLine: number;
+  startColumn: number;
+  endLine: number;
+  endColumn: number;
+  anchorText?: string;
+}
+
+export interface CodeThreadMapping {
+  id: string;
+  workspaceId: string;
+  threadId: string;
+  location: CodeThreadLocation;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface EvidenceSpan {
   id: string;
   workspaceId: string;
@@ -231,7 +249,9 @@ export interface WorkspaceIndex {
 export interface EditorSelectionState {
   activeFile: string;
   startLine: number;
+  startColumn?: number;
   endLine: number;
+  endColumn?: number;
   selectedText: string;
   currentSymbolId?: string;
 }

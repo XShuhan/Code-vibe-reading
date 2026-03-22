@@ -5,6 +5,7 @@ import type { EditorSelectionState, Thread } from "@code-vibe/shared";
 
 import { ensureModelConfigured } from "../config/settings";
 import { getActiveSelectionState } from "../editor/selectionContext";
+import type { CodeThreadMappingService } from "../services/codeThreadMappingService";
 import type { IndexService } from "../services/indexService";
 import type { ThreadService } from "../services/threadService";
 import type { VibeController } from "../services/vibeController";
@@ -73,9 +74,10 @@ export function registerAskAboutSelectionCommand(
   context: vscode.ExtensionContext,
   indexService: IndexService,
   threadService: ThreadService,
+  mappingService: CodeThreadMappingService,
   controller: VibeController
 ): void {
-  const composer = createSelectionComposer(context, indexService, threadService, controller);
+  const composer = createSelectionComposer(context, indexService, threadService, mappingService, controller);
 
   context.subscriptions.push(
     vscode.commands.registerCommand(COMMANDS.askAboutSelection, async () => {
@@ -88,6 +90,7 @@ export async function askAboutSelection(
   context: vscode.ExtensionContext,
   indexService: IndexService,
   threadService: ThreadService,
+  mappingService: CodeThreadMappingService,
   controller: VibeController,
   overrideQuestion?: string
 ): Promise<Thread | undefined> {
@@ -103,7 +106,7 @@ export async function askAboutSelection(
   }
 
   try {
-    return await executeAskAboutSelection(context, threadService, controller, editorState, question);
+    return await executeAskAboutSelection(context, threadService, mappingService, controller, editorState, question);
   } catch (error) {
     vscode.window.showErrorMessage(String(error));
     return undefined;
@@ -114,11 +117,12 @@ function createSelectionComposer(
   context: vscode.ExtensionContext,
   indexService: IndexService,
   threadService: ThreadService,
+  mappingService: CodeThreadMappingService,
   controller: VibeController
 ): {
   open: () => Promise<void>;
 } {
-  const fallbackComposer = createPanelComposer(context, threadService, controller);
+  const fallbackComposer = createPanelComposer(context, threadService, mappingService, controller);
 
   let inlineInset: WebviewEditorInsetLike | undefined;
   let inlineSnapshot: EditorSelectionState | null = null;
@@ -252,9 +256,21 @@ function createSelectionComposer(
 
         inlineInFlight = true;
         try {
-          const thread = await executeAskAboutSelection(context, threadService, controller, inlineSnapshot, question);
+          const thread = await executeAskAboutSelection(
+            context,
+            threadService,
+            mappingService,
+            controller,
+            inlineSnapshot,
+            question,
+            {
+              onThreadCreated: () => {
+                inset.dispose();
+              }
+            }
+          );
           if (thread) {
-            inset.dispose();
+            return;
           }
         } catch (error) {
           const errorText = String(error);
@@ -293,6 +309,7 @@ function createSelectionComposer(
 function createPanelComposer(
   context: vscode.ExtensionContext,
   threadService: ThreadService,
+  mappingService: CodeThreadMappingService,
   controller: VibeController
 ): {
   open: (editorState: EditorSelectionState) => Promise<void>;
@@ -394,9 +411,21 @@ function createPanelComposer(
 
         inFlight = true;
         try {
-          const thread = await executeAskAboutSelection(context, threadService, controller, editorStateSnapshot, question);
+          const thread = await executeAskAboutSelection(
+            context,
+            threadService,
+            mappingService,
+            controller,
+            editorStateSnapshot,
+            question,
+            {
+              onThreadCreated: () => {
+                panel?.dispose();
+              }
+            }
+          );
           if (thread) {
-            panel.dispose();
+            return;
           }
         } catch (error) {
           const errorText = String(error);
@@ -454,9 +483,13 @@ function getCreateWebviewTextEditorInset(): CreateWebviewTextEditorInset | undef
 async function executeAskAboutSelection(
   context: vscode.ExtensionContext,
   threadService: ThreadService,
+  mappingService: CodeThreadMappingService,
   controller: VibeController,
   editorState: EditorSelectionState,
-  question: string
+  question: string,
+  options?: {
+    onThreadCreated?: () => void;
+  }
 ): Promise<Thread | undefined> {
   const modelConfig = await ensureModelConfigured(context, "ask");
   if (!modelConfig) {
@@ -466,8 +499,10 @@ async function executeAskAboutSelection(
   const thread = await threadService.askQuestion(question, editorState, modelConfig, {
     onThreadCreated: async (createdThread) => {
       await controller.openThread(createdThread.id);
+      options?.onThreadCreated?.();
     }
   });
+  await mappingService.addThreadMapping(thread.id, editorState);
   return thread;
 }
 
@@ -476,7 +511,7 @@ function buildPanelHydrationPayload(editorState: EditorSelectionState): PanelHyd
     suggestion: editorState.selectedText
       ? "Explain this code and its surrounding behavior"
       : "Explain the current symbol",
-    contextLabel: `${editorState.activeFile}:${editorState.startLine}-${editorState.endLine}`,
+    contextLabel: `${editorState.activeFile}:${editorState.startLine}:${editorState.startColumn}-${editorState.endLine}:${editorState.endColumn}`,
     selectionPreview: compactSelectionPreview(editorState.selectedText)
   };
 }

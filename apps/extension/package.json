@@ -36,7 +36,8 @@
         {
           "id": "vibe.threads",
           "name": "Threads",
-          "icon": "media/icon.svg"
+          "icon": "media/icon.svg",
+          "type": "webview"
         },
         {
           "id": "vibe.cards",
@@ -105,6 +106,14 @@
         "title": "Vibe: Open Thread"
       },
       {
+        "command": "vibe.openThreadFromCode",
+        "title": "Vibe: Open Thread From Code"
+      },
+      {
+        "command": "vibe.goToCodeFromThread",
+        "title": "Vibe: Go To Code From Thread"
+      },
+      {
         "command": "vibe.openCard",
         "title": "Vibe: Open Card"
       },
@@ -128,6 +137,12 @@
         "command": "vibe.deleteThread",
         "key": "delete",
         "mac": "backspace",
+        "when": "focusedView == vibe.threads && listFocus && !inputFocus"
+      },
+      {
+        "command": "vibe.goToCodeFromThread",
+        "key": "ctrl+enter",
+        "mac": "cmd+enter",
         "when": "focusedView == vibe.threads && listFocus && !inputFocus"
       }
     ],
@@ -169,6 +184,11 @@
           "command": "vibe.addThreadAnswerToCanvas",
           "when": "view == vibe.threads",
           "group": "navigation"
+        },
+        {
+          "command": "vibe.goToCodeFromThread",
+          "when": "view == vibe.threads && viewItem =~ /^thread\\.withCode/",
+          "group": "inline"
         },
         {
           "command": "vibe.openCard",
